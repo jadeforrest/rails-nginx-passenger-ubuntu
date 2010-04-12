@@ -1,25 +1,49 @@
 rails-nginx-passenger-ubuntu
 ============================
 
-My notes on setting up a simple production server with ubuntu, nginx, passenger and mysql for rails.
-
-Aliases
--------
-
-    echo "alias ll='ls -l'" >> ~/.bash_aliases
-    
-edit .bashrc and uncomment the loading of .bash_aliases
-
-If you have trouble with PATH that changes when doing sudo, see http://stackoverflow.com/questions/257616/sudo-changes-path-why then add the following line to the same file
-
-    echo "alias sudo='sudo env PATH=$PATH'" >> ~/.bash_aliases
-    
+Adopted notes on setting up a simple production server with ubuntu,
+nginx, passenger, mongodb, on rails 3.
 
 Update and upgrade the system
 -------------------------------
 
     sudo apt-get update
     sudo apt-get upgrade
+
+Emacs
+-----
+
+    sudo apt-get install emacs
+
+DNS
+---
+
+Point DNS as correct IP
+
+Installing git
+----------------
+
+    sudo apt-get install git-core
+
+Check out code
+
+RVM
+---
+
+    Install RVM
+    Install Ruby Enterprise Edition
+
+Firewall Setup
+--------------
+
+    Install ipkungfu
+    Configure
+
+MongoDB
+-------
+
+    Install MongoDB 
+    http://t.pitale.com/posts/mongodb-in-a-deployed-environment.html
 
 Configure timezone
 -------------------
@@ -39,24 +63,16 @@ Configure hostname
 
 Add 127.0.0.1 your-hostname
 
-    sudo vim /etc/hosts
+    sudo emacs /etc/hosts
     
 Write your-hostname in 
     
-    sudo vim /etc/hostname
+    sudo emacs /etc/hostname
     
 Verify that hostname is set
     
     hostname
 
-Install mysql
----------------
-
-This should be installed before Ruby Enterprise Edition becouse that will install the mysql gem.
-
-    sudo apt-get install mysql-server libmysqlclient15-dev
-    
-    
 Gemrc
 -------
 
@@ -69,47 +85,18 @@ Add the following lines to ~/.gemrc, this will speed up gem installation and pre
     gem: --no-ri --no-rdoc
 
 
-Ruby Enterprise Edition
-------------------------
-
-Check for newer version at http://www.rubyenterpriseedition.com/download.html
-
-Install package required by ruby enterprise, C compiler, Zlib development headers, OpenSSL development headers, GNU Readline development headers
-
-    sudo apt-get install build-essential zlib1g-dev libssl-dev libreadline5-dev
-
-Download and install Ruby Enterprise Edition
-
-    wget http://rubyforge.org/frs/download.php/66162/ruby-enterprise-X.X.X-ZZZZ.ZZ.tar.gz
-    tar xvfz ruby-enterprise-X.X.X-ZZZZ.ZZ.tar.gz 
-    rm ruby-enterprise-X.X.X-ZZZZ.ZZ.tar.gz 
-    cd ruby-enterprise-X.X.X-ZZZZ.ZZ/
-    sudo ./installer
-    
-    
-Change target folder to /opt/ruby for easier upgrade later on
-
-Add Ruby Enterprise bin to PATH
-
-    echo "export PATH=/opt/ruby/bin:$PATH" >> ~/.profile && . ~/.profile
-    
-Verify the ruby installation
-
-    ruby -v
-    ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux], MBARI 0x6770, Ruby Enterprise Edition 20090928
-
-
-Installing git
-----------------
-
-    sudo apt-get install git-core
-
 Nginx
 -------
 
-    sudo /opt/ruby/bin/passenger-install-nginx-module
+    gem install passenger
+    passenger-install-nginx-module
 
-Select option 1. Yes: download, compile and install Nginx for me. (recommended)
+Select option 1. Yes: download, compile and install Nginx for
+me. (recommended) Choose a location inside your user's home directory,
+so you don't have to install as root. I actually did ~/nginx but it
+did not turn this into a real directory, so I had to move it later
+from /tmp/nginx-xxx/~/nginx to /usr/local/nginx and change the
+ownership to root.
 
 When finished, verify nginx source code is located under /tmp
 
@@ -121,13 +108,13 @@ When finished, verify nginx source code is located under /tmp
     
 Run the passenger-install-nginx-module once more if you want to add --with-http_ssl_module 
 
-    $ sudo /opt/ruby/bin/passenger-install-nginx-module
+    $ passenger-install-nginx-module
     
 Select option 2. No: I want to customize my Nginx installation. (for advanced users)
 
 When installation script ask, "Where is your Nginx source code located?" Enter:
 
-    /tmp/nginx-0.6.36
+    /tmp/nginx-0.7.64
 
 On, extra arguments to pass to configure script add
 
@@ -140,8 +127,8 @@ Nginx init script
 More information on http://wiki.nginx.org/Nginx-init-ubuntu
 
     cd
-    git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git
-    sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
+    git clone git://github.com/jadeforrest/rails-nginx-passenger-ubuntu.git
+    sudo cp rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
     sudo chown root:root /etc/init.d/nginx
     
 Verify that you can start and stop nginx with init script
