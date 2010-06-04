@@ -2,7 +2,7 @@ rails-nginx-passenger-ubuntu
 ============================
 
 Adopted notes on setting up a simple production server with ubuntu,
-nginx, passenger, mongodb, on rails 3.
+passenger, mongodb, on rails 3.
 
 Update and upgrade the system
 -------------------------------
@@ -18,7 +18,7 @@ Emacs
 DNS
 ---
 
-Point DNS as correct IP
+Point DNS at correct IP (for me at Linode), configure Linode DNS in control panel
 
 Installing git
 ----------------
@@ -81,7 +81,11 @@ Verify that hostname is set
 Apache 
 -------
 
-I tried to install nginx, but was not successful. I found it frustrating and opaque. http://serverfault.com/questions/133536/how-do-i-troubleshoot-nginx-not-recognizing-passenger
+I tried to install nginx, but was not successful. I found it frustrating and opaque. 
+
+http://serverfault.com/questions/133536/how-do-i-troubleshoot-nginx-not-recognizing-passenger
+
+So I installed Phusion Passenger (see http://www.modrails.com/install.html):
 
     sudo gem install passenger
     sudo passenger-install-apache-module
